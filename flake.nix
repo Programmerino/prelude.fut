@@ -39,13 +39,16 @@
             checkPhase = checks.defaultPackage.checkPhase;
           };
 
-          packages.docs = pkgs.stdenv.mkDerivation {
-            name = "${name}-docs";
+          packages.web = pkgs.stdenv.mkDerivation {
+            name = "${name}-web";
             inherit src;
             dontInstall = true;
             nativeBuildInputs = [ pkgs.futhark ];
             buildPhase = ''
-              futhark doc lib -o $out
+              mkdir -p $out
+              cp -r $src/web/. $out
+              chmod -R 755 $out
+              futhark doc lib -o $out/docs
             '';
           };
 
