@@ -15,29 +15,13 @@
         "type": "github"
       }
     },
-    "futhark-repo": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1649407943,
-        "narHash": "sha256-bBk/zG+DYQZVR+ODGyNY6JpDY3GSNpGs/T3+bmQBxvA=",
-        "owner": "diku-dk",
-        "repo": "futhark",
-        "rev": "a580cad8a18cb6452b9a4cee724553f05c0a0971",
-        "type": "github"
-      },
-      "original": {
-        "owner": "diku-dk",
-        "repo": "futhark",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1649458889,
-        "narHash": "sha256-jK3XUVZ4spZnChoFAuYBf7bCu1Bm2WL0m9H8sxij1oE=",
+        "lastModified": 1649638879,
+        "narHash": "sha256-kdud/P/0Uzl+geH2oV0BTJ6AMl20u+1NCzBPvl0hzFg=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "4e23a0b384d5ba8baa66497385bb2ebbd43f097e",
+        "rev": "4ea239aa707b8cc86a1cd6cf745a4727933303ec",
         "type": "github"
       },
       "original": {
@@ -49,7 +33,6 @@
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
-        "futhark-repo": "futhark-repo",
         "nixpkgs": "nixpkgs"
       }
     }

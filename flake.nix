@@ -7,11 +7,7 @@
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  inputs.futhark-repo.url = "github:diku-dk/futhark";
-
-  inputs.futhark-repo.flake = false;
-
-  outputs = { self, nixpkgs, flake-utils, futhark-repo }:
+  outputs = { self, nixpkgs, flake-utils }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { 
@@ -19,18 +15,7 @@
         };
         src = ./.;
         name = "prelude.fut";
-        version = let _ver = builtins.getEnv "GITVERSION_NUGETVERSIONV2"; in if _ver == "" then "0.0.0" else "${_ver}.${builtins.getEnv "GITVERSION_COMMITSSINCEVERSIONSOURCE"}";
-
-        futharktar = pkgs.callPackage futhark-repo { };
-        futhark = pkgs.stdenv.mkDerivation {
-            name = "futhark";
-            src = "${futharktar}/futhark-nightly.tar.xz";
-            installPhase = ''
-              mkdir -p $out
-              cp ./* -R $out
-              ls $out
-            '';
-        };
+        version = "0.0.1";
 
       in rec {
           devShell = pkgs.mkShell {
@@ -44,8 +29,7 @@
             inherit src;
             doCheck = true;
             dontInstall = true;
-            # Using nixpkgs futhark is nicer to build with, but it doesn't have LSP support yet
-            nativeBuildInputs = [ futhark ];
+            nativeBuildInputs = [ pkgs.futhark ];
             buildPhase = ''
               mkdir -p $out
               cp -r $src/lib $out
@@ -59,7 +43,7 @@
             name = "${name}-docs";
             inherit src;
             dontInstall = true;
-            nativeBuildInputs = [ futhark ];
+            nativeBuildInputs = [ pkgs.futhark ];
             buildPhase = ''
               futhark doc lib -o $out
             '';
