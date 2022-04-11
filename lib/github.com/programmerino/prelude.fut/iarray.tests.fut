@@ -1,3 +1,5 @@
+-- | ignore
+
 import "iarray"
 
 -- ==

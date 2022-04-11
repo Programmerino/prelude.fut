@@ -1,3 +1,5 @@
+-- | ignore
+
 module StringUtils = {
     let concat (sep: []u8) (str: [][]u8) =
         let (accum, _) = loop (accum, first) = ("", true) for x in str do
@@ -21,11 +23,11 @@ module ArrayUtils = {
     let to_string strFn x =
         x |> map(strFn) |> StringUtils.concat ", "
 
-    let indices_to_values [n][m] 'a (zero: a) (x: [n]a) (is: [m]i64): [m]a =
+    let indices_to_values [m] zero x (is: [m]i64) =
         loop acc = (replicate m zero) for i < m do
             acc with [i] = x[is[i]]
 
-    let windowed [n] 'a (w: i64) (xs: [n]a) : [][w]a =
+    let windowed [n] 'a w (xs: [n]a) =
         let w' = assert (w > 0) w
         in
         if w' > n then

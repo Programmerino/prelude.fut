@@ -1,3 +1,5 @@
+-- | ignore
+
 import "string"
 import "iarray"
 

@@ -1,3 +1,8 @@
+-- | This contains functions for dealing with character arrays (in this library, considered strings).
+-- These can be created with standard string syntax (e.g. "hello") which compiles down
+-- to a u8 array, and characters can be created with single ticks (e.g 'a'). Entrypoints
+-- outputting strings can use the -b option to avoid them being output as an array of
+-- numbers
 import "iarray"
 import "array"
 import "option"
@@ -5,24 +10,50 @@ import "util"
 
 type string [n] = [n]u8
 
-module String = {
+module type String = {
     -- | split_on_chars c x is an array of all substrings of x that are delimited
     -- by any character in c.
-    def split_on_chars (c: []u8) (x: string[]): iarray [][] u8 = Array.split_by (\x -> any (\y -> y == x) c) x
+    val split_on_chars [n][m]: [n]u8 -> string[m] -> iarray [][] u8
+    
+    val length [n]: string[n] -> i64
+
+    -- | Reverses the input string
+    val reverse [n]: string[n] -> string[n]
+
+    -- | concat sep ss concatenates the list of strings ss, inserting the separator string sep between each
+    val concat [n][m][a]: string[n] -> [m]string[a] -> *string[]
+
+    -- | lower str is str with all uppercase letters translated to lowercase
+    val lower [n]: string[n] -> string[n]
+
+    -- | Converts between a single digit u8 ASCII character (interpreted as hex) and the corresponding u8 integer
+    val digit_to_int: u8 -> option u8
+    
+    -- | Returns the string representation of an integer in decimal
+    val string_of_int: i64 -> string[]
+
+    -- | Converts the given string to an integer, interpreted as a positive decimal number
+    val int_of_string [n]: string[n] -> u64
+
+    -- | Replaces character old in the provided string, str, with character new
+    val replace_char [n]: u8 -> u8 -> string[n] -> string[n]
+
+    -- | Removes all instances of a character from the provided string
+    val remove_char [n]: u8 -> [n]u8 -> []u8
+}
+
+module String: String = {
+    def split_on_chars c x: iarray [][] u8 = Array.split_by (\x -> any (\y -> y == x) c) x
 
     def length [n] (_: string[n]) = n
 
-    -- | Reverses the input string
-    def reverse (str: string[]) = str |> reverse
+    def reverse str = str |> reverse
 
-    -- | concat sep ss concatenates the list of strings ss, inserting the separator string sep between each
-    def concat (sep: string[]) (ss: []string[]) = StringUtils.concat sep ss
+    def concat = StringUtils.concat
 
-    -- | lower str is str with all uppercase letters translated to lowercase
-    let lower (str: string[]) = str |> map(\x -> if x >= 'A' && x <= 'Z' then x - ('A' - 'a') else x)
+    def lower (str: string[]) = str |> map(\x -> if x >= 'A' && x <= 'Z' then x - ('A' - 'a') else x)
 
-    -- | Converts between a single digit u8 ASCII character and the corresponding u8 integer
-    def digitToInt (c: u8): option u8 =
+    def digit_to_int c: option u8 =
         match ([c] |> lower |> head)
         case '0' -> #Some 0
         case '1' -> #Some 1
@@ -42,20 +73,16 @@ module String = {
         case 'f' -> #Some 15
         case _ -> #None
 
-    -- | Returns the string representation of an integer in decimal
-    def string_of_int (i: i64) = StringUtils.string_of_int i
+    def string_of_int = StringUtils.string_of_int
 
-    -- | Converts the given string to an integer, interpreted as a decimal number
-    def int_of_string (str: string[]) =
+    def int_of_string str =
         let reversed = str |> reverse
         in
-        (loop (answer, factor) = (0, 1) for i < (length str) do ((answer + (reversed[i] - '0')) * factor, factor * 10)).0
+        (loop (answer, factor) = (0u64, 1) for i < (length str) do ((answer + u64.u8((reversed[i] - '0'))) * factor, factor * 10)).0
 
-    -- | Replaces character old in the provided string, str, with character new
-    def replace_char [n] (old: u8) (new: u8) (str: string[n]): string[n] =
+    def replace_char [n] old new str: string[n] =
         str |> map(\x -> if x == old then new else x)
 
-    -- | Removes all instances of a character from the provided string
-    def remove_char (c: u8) (str: string[]) =
+    def remove_char c (str: string[]) =
         str |> filter (\x -> x != c)
 }
