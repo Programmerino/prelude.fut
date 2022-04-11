@@ -1,3 +1,5 @@
+-- | More utility functions for arrays.
+
 import "iarray"
 import "util"
 

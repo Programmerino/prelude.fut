@@ -1,10 +1,12 @@
+-- | A data structure and functions for achieving 2D irregular arrays.
+
+import "util"
+
 -- | An expansion of the concepts discussed on [this comment](https://github.com/diku-dk/futhark/issues/454#issuecomment-355406287)
 -- with implementations for scan and reduce adapted from [diku-dk/segmented](https://github.com/diku-dk/segmented).
 -- This implementation works by storing a single-dimensional array and an array of associated lengths for each subarray or
 -- segment. IArrays can be created with the `from_array_lengths`@IArray, `from_array_flags`@IArray, or `singleton`@IArray functions 
 -- and can be accessed with the `i`@IArray function. Eventually, it should support most of the standard prelude functions for arrays.
-
-import "util"
 
 type iarray [a][n] 't = { data: [a]t, lengths: [n]i64 }
 

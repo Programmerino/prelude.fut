@@ -1,3 +1,5 @@
+-- | The Option monad and helper functions.
+
 type option 'a = #Some a | #None
 
 module type Option = {

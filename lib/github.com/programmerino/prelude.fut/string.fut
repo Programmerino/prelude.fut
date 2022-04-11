@@ -1,12 +1,15 @@
+-- | Utility functions for dealing with strings based on u8 arrays
+
+import "iarray"
+import "array"
+import "option"
+import "util"
+
 -- | This contains functions for dealing with character arrays (in this library, considered strings).
 -- These can be created with standard string syntax (e.g. "hello") which compiles down
 -- to a u8 array, and characters can be created with single ticks (e.g 'a'). Entrypoints
 -- outputting strings can use the -b option to avoid them being output as an array of
 -- numbers
-import "iarray"
-import "array"
-import "option"
-import "util"
 
 type string [n] = [n]u8
 

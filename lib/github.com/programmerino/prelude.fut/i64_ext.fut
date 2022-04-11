@@ -1,3 +1,4 @@
+-- | More utility functions for 64-bit integers.
 import "string"
 
 module type i64_ext = {
