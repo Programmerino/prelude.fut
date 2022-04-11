@@ -1,0 +1,4 @@
+package github.com/programmerino/prelude.fut
+
+require {
+}

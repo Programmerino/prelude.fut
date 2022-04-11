@@ -1,0 +1,59 @@
+{
+  "nodes": {
+    "flake-utils": {
+      "locked": {
+        "lastModified": 1648297722,
+        "narHash": "sha256-W+qlPsiZd8F3XkzXOzAoR+mpFqzm3ekQkJNa+PIh1BQ=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "0f8662f1319ad6abf89b3380dd2722369fc51ade",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "futhark-repo": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1649407943,
+        "narHash": "sha256-bBk/zG+DYQZVR+ODGyNY6JpDY3GSNpGs/T3+bmQBxvA=",
+        "owner": "diku-dk",
+        "repo": "futhark",
+        "rev": "a580cad8a18cb6452b9a4cee724553f05c0a0971",
+        "type": "github"
+      },
+      "original": {
+        "owner": "diku-dk",
+        "repo": "futhark",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1649458889,
+        "narHash": "sha256-jK3XUVZ4spZnChoFAuYBf7bCu1Bm2WL0m9H8sxij1oE=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "4e23a0b384d5ba8baa66497385bb2ebbd43f097e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "futhark-repo": "futhark-repo",
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
