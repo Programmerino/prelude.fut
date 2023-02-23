@@ -9,6 +9,9 @@ module type i64_ext = {
 
     -- | Gets the number of digits in a number (0 counts as 1 digit)
     val digits_in: i64 -> i64
+
+    -- | Integer division which rounds upwards
+    val cdiv: i64 -> i64 -> i64
 }
 
 module i64_ext: i64_ext = {
@@ -20,4 +23,6 @@ module i64_ext: i64_ext = {
 
     def digits_in n =
         1 + floor_log_10 n
+        
+    def cdiv (x: i64) y = 1 + ((x - 1) / y)
 }

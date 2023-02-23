@@ -46,7 +46,12 @@ module type String = {
 }
 
 module String: String = {
-    def split_on_chars c x: iarray [][] u8 = Array.split_by (\x -> any (\y -> y == x) c) x
+    def split_on_chars [n] (c: [n]u8) x: iarray [][] u8 =
+        let max = (u8.highest |> i64.u8) + 1
+        let flags = scatter (replicate max false) (map i64.u8 c) (replicate n true)
+        in
+        x
+        |> Array.split_by (\x -> flags[i16.u8 x])
 
     def length [n] (_: string[n]) = n
 

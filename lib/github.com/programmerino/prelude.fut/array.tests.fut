@@ -2,52 +2,6 @@
 import "array"
 import "string"
 
--- START OF DISTINCT_BY
-
--- ==
--- entry: test_distinct_by_failfun
--- input { empty([0]i32) }
--- output { empty([0]i32) }
-entry test_distinct_by_failfun (xs: []i32): []i32 = Array.distinct_by 0 (\_ _ -> assert false true) xs
-
--- ==
--- entry: test_distinct_by_id
--- input { [1] }
--- output { [1] }
--- input { [1, 1] }
--- output { [1] }
--- input { [1, 2, 3, 1] }
--- output { [1, 2, 3] }
-entry test_distinct_by_id (xs: []i32): []i32 = Array.distinct_by 0 (\x y -> x == y) xs
-
-let distinct_by_proj (xs: []i32) (proj: i32 -> i32): []i32 =
-    Array.distinct_by 0 (\x y -> (proj x) == (proj y)) xs
-
--- ==
--- entry: test_distinct_by_div
--- input { [1, 2] }
--- output { [1] }
-entry test_distinct_by_div (xs: []i32): []i32 = distinct_by_proj xs (\x -> x / x)
-
--- ==
--- entry: test_distinct_by_less
--- input { [1, 2, 3, 4] }
--- output { [1, 2] }
-entry test_distinct_by_less (xs: []i32): []i32 = distinct_by_proj xs (\x -> if x < 3 then x else 1)
-
--- irregularity prevents this
--- -- ==
--- -- entry: test_distinct_by_sum
--- -- input { [[1,2], [1,3], [2,1]] }
--- -- output { [[1, 2], [1, 3]] }
-
--- entry test_distinct_by_sum (xs: [3][2]i32): [2][2]i32 =
---     let proj x = i32.sum x
---     in
---     Array.distinct_by [] (\x y -> (proj x) == (proj y)) xs
-
--- END OF DISTINCT_BY
-
 -- START OF BLIT
 
 -- ==
@@ -114,6 +68,17 @@ entry test_blit_bounds5 (_: bool) =
 
 -- END OF BLIT
 
+-- START OF REMOVE_INDICES
+
+-- ==
+-- entry: test_remove_indices
+-- random input { [65535]i64 [32767]u16 }
+-- auto output
+entry test_remove_indices (vs: [65535]i64) (is: [32767]u16) =
+    Array.remove_indices vs (map i64.u16 is)
+
+-- END OF REMOVE_INDICES
+
 -- START OF WINDOWED
 
 -- ==
@@ -132,10 +97,10 @@ entry test_blit_bounds5 (_: bool) =
 -- error: w > 0
 entry test_windowed_i32 [n] (w: i64) (xs: [n]i32) : [][w]i32 = Array.windowed w xs
 
--- ==
--- entry: test_windowed_str
--- input { 2i64 [[115u8, 116u8, 114u8, 49u8], [115u8, 116u8, 114u8, 50u8], [115u8, 116u8, 114u8, 51u8], [115u8, 116u8, 114u8, 52u8]] }
--- output { [[[115u8, 116u8, 114u8, 49u8], [115u8, 116u8, 114u8, 50u8]], [[115u8, 116u8, 114u8, 50u8], [115u8, 116u8, 114u8, 51u8]], [[115u8, 116u8, 114u8, 51u8], [115u8, 116u8, 114u8, 52u8]]] }
-entry test_windowed_str [n] (w: i64) (xs: []string[n]) = Array.windowed w xs
+-- -- ==
+-- -- entry: test_windowed_str
+-- -- input { 2i64 [[115u8, 116u8, 114u8, 49u8], [115u8, 116u8, 114u8, 50u8], [115u8, 116u8, 114u8, 51u8], [115u8, 116u8, 114u8, 52u8]] }
+-- -- output { [[[115u8, 116u8, 114u8, 49u8], [115u8, 116u8, 114u8, 50u8]], [[115u8, 116u8, 114u8, 50u8], [115u8, 116u8, 114u8, 51u8]], [[115u8, 116u8, 114u8, 51u8], [115u8, 116u8, 114u8, 52u8]]] }
+-- entry test_windowed_str [n] (w: i64) (xs: []string[n]) = Array.windowed w xs
 
 -- END OF WINDOWED

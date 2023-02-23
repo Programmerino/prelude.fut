@@ -27,3 +27,9 @@
 
 *.c
 /result
+*.actual
+*.expected
+*.kernels.ispc
+*.o
+data/
+.DS_Store

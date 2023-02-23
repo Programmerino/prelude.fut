@@ -13,6 +13,23 @@ entry test_split_on_chars [n] (c: []u8) (x: string[n]) i =
     in
     IArray.i_to res 3 i
 
+
+-- ==
+-- entry: bench_split_on_chars
+-- random input { [127]u8 [256]u8 }
+-- auto output
+entry bench_split_on_chars (c: [127]u8) (x: [256]u8) =
+    let res = String.split_on_chars c x
+    in
+    res.data
+
+-- ==
+-- entry: bench_concat
+-- random input { [2]u8 [5000][20]u8 }
+-- auto output
+entry bench_concat (c: [2]u8) (x: [5000][20]u8) =
+    String.concat c x
+
 -- ==
 -- entry: test_length
 -- input { empty([0]u8) }

@@ -1,14 +1,10 @@
 -- | ignore
 
 module StringUtils = {
-    let concat (sep: []u8) (str: [][]u8) =
-        let (accum, _) = loop (accum, first) = ("", true) for x in str do
-                            if first then
-                                (x, false)
-                            else
-                                (accum ++ sep ++ x, false)
+    let concat [n][m] (sep: [n]u8) (str: [][m]u8) =
+        let each_size = n + m
         in
-        accum
+        str[0] ++ flatten (map (\x -> #[unsafe] (sep ++ x) :> [each_size]u8) (tail str))
 
     let string_of_int (i: i64) =
         if i == 0 then "0" else
@@ -37,4 +33,3 @@ module ArrayUtils = {
             in
             starts |> map(\x -> xs[x:x + w'] :> [w]a)
 }
-
