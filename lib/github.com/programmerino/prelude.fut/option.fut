@@ -10,6 +10,10 @@ module type Option = {
     -- or None if the input is None.
     val map 'a 'b: (a -> b) -> option a -> option b
 
+    -- | Like map, but it flattens the result of the function call rather than
+    -- returning nested options
+    val flatmap 'a 'b: (a -> option b) -> option a -> option b
+
     -- | Extracts the value out of an option with an assertion that it is not None.
     -- Example is an example of the type which is necessary for the implementation
     val unwrap 'a: a -> option a -> a
@@ -33,9 +37,12 @@ module type Option = {
 }
 
 module Option: Option = {
-
     def map 'a 'b c (x: option a): option b = match x
         case #Some a -> #Some (c a)
+        case #None -> #None
+
+    def flatmap 'a 'b c (x: option a): option b = match x
+        case #Some a -> c a
         case #None -> #None
 
     def unwrap 'a example (x: option a) = match x
