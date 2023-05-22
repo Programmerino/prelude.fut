@@ -13,21 +13,52 @@ local def checkHash2 f size acc x =
     let res = f size acc x
     in assert (res >= 1) (assert (res < i64.abs size) res)
 
+module type HashSet = {
+    type t
+    -- | Returns an array of unsorted keys stored in the hashset
+    val get_keys [n]: hashset [n] t -> *[]t
+    -- | Returns the number of active keys in the hashset
+    val length [n]: hashset [n] t -> i64
+    -- Adds a key to the hashset
+    val add [n]: t -> *hashset [n] t -> *hashset [] t
+    -- | Adds multiple keys to the hashset
+    val multiadd [n][o][p]: [n]t -> *hashset [o] t -> *hashset[]t
+    -- | Returns true if the key is present, false otherwise
+    val exists [n]: t -> hashset [n] t -> bool
+    -- | Deletes a key from the hashset (marked invalid until next resize, then truly deleted)
+    val delete [n]: t -> *hashset [n] t -> *hashset [n] t
+}
+
+-- | Parameters for the hashset and the necessary information about a type
+-- to implement a hashset for it
 module type Type = {
     type t
+    -- | An example of the type
     val exm: t
+    -- | == for the type
     val eq: t -> t -> bool
+    -- | What % of the size of the hashtable can be filled before resizing
+    -- Note, this is a time-space tradeoff. The default hashsets use 0.25
     val LOAD_FACTOR: f64
+    -- | See https://en.wikipedia.org/wiki/Double_hashing
     val hash1: i64 -> i64 -> t -> i64 -- size (2^p), p, key
+    -- | See https://en.wikipedia.org/wiki/Double_hashing
     val hash2: i64 -> i64 -> t -> i64
+    -- | A function which can generate the hashset
     val make: i64 -> *hashset [] t
+    -- | Default size of empty hashset
     val emptySize: i64
+    -- | Empty hashset
     val empty: hashset [emptySize] t
+    -- | Given current size, current load, load increase, and an i64
+    -- accumulator (can store any additional information), return
+    -- the new size and a new accumulator value.
     val resize: i64 -> i64 -> i64 -> i64 -> (i64, i64) -- current size, current load, load increase, acc. Return new size and new acc
 }
 
-module HashSet (T: Type) = {
-    open T
+module HashSet (T: Type): HashSet = {
+    local open T
+    type t = t
 
     local def hash1 = checkHash1 hash1
     local def hash2 = checkHash2 hash2
