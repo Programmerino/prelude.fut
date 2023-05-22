@@ -20,7 +20,7 @@ module type Array = {
     val resize_to [n] 'a: a -> (len: i64) -> [n]a -> [len]a
 
     -- | Gets the values of a given array referred to by an array of indices of that array
-    val indices_to_values [n][m] 'a: a -> [n]a -> [m]i64 -> [m]a
+    val indices_to_values [n][m] 'a: [n]a -> [m]i64 -> [m]a
 
     -- | Returns an array of indices of the given array where the corresponding values met the provided condition
     val find_indices [n] 'a: (a -> bool) -> [n]a -> []i64

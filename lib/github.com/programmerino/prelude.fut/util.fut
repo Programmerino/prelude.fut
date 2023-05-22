@@ -19,9 +19,7 @@ module ArrayUtils = {
     let to_string strFn x =
         x |> map(strFn) |> StringUtils.concat ", "
 
-    let indices_to_values [m] zero x (is: [m]i64) =
-        loop acc = (replicate m zero) for i < m do
-            acc with [i] = x[is[i]]
+    let indices_to_values [m] x (is: [m]i64) = is |> map(\i -> x[i])
 
     let windowed [n] 'a w (xs: [n]a) =
         let w' = assert (w > 0) w
