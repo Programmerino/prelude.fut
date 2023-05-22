@@ -83,10 +83,11 @@ module String: String = {
 
     def string_of_int = StringUtils.string_of_int
 
-    def int_of_string str =
-        let reversed = str |> reverse
-        in
-        (loop (answer, factor) = (0u64, 1) for i < (length str) do ((answer + u64.u8((reversed[i] - '0'))) * factor, factor * 10)).0
+    def int_of_string [n] (str: string[n]) =
+        str
+        |> map (\x -> (u64.u8 x) - '0')
+        |> reduce_comm (\x y -> (x * 10) + y) 0
+        
 
     def replace_char [n] old new str: string[n] =
         str |> map(\x -> if x == old then new else x)
