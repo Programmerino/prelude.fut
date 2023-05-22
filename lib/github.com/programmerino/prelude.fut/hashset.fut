@@ -15,6 +15,12 @@ local def checkHash2 f size acc x =
 
 module type HashSet = {
     type t
+    -- | Create a new hashset given a target length
+    val make: i64 -> *hashset [] t
+    -- | Empty hashset size
+    val emptySize: i64
+    -- | Empty hashset
+    val empty: hashset [emptySize] t
     -- | Returns an array of unsorted keys stored in the hashset
     val get_keys [n]: hashset [n] t -> *[]t
     -- | Returns the number of active keys in the hashset
@@ -58,7 +64,12 @@ module type Type = {
 
 module HashSet (T: Type): HashSet = {
     local open T
+
+    -- Exporting from T
     type t = t
+    def make = make
+    def emptySize = emptySize
+    def empty = (empty :> hashset [emptySize] t)
 
     local def hash1 = checkHash1 hash1
     local def hash2 = checkHash2 hash2
