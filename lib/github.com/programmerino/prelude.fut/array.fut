@@ -32,6 +32,8 @@ module type Array = {
     -- of elements in each window and xs is the input array
     val windowed [n] 'a: (w: i64) -> [n]a -> [][w]a
 
+    val differences [n] 'a 'b: (a -> a -> b) -> [n]a -> []b
+
     -- | Creates segments out of an array where segments start when the value satisfies the predicate
     val split_by [n] 'a: (a -> bool) -> [n]a -> iarray [][] a
 
@@ -93,7 +95,7 @@ module Array: Array = {
 
     def windowed = ArrayUtils.windowed
 
-    def differences minus x =
+    def differences [n] 'a 'b (minus: a -> a -> b) (x: [n]a): []b =
         windowed 2 x
         |> map(\arr -> arr[1] `minus` arr[0])
 
