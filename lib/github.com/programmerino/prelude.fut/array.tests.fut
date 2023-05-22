@@ -68,18 +68,12 @@ entry test_blit_bounds5 (_: bool) =
 
 -- END OF BLIT
 
--- START OF REMOVE_INDICES
-
 -- ==
 -- entry: test_remove_indices
 -- random input { [65535]i64 [32767]u16 }
 -- auto output
 entry test_remove_indices (vs: [65535]i64) (is: [32767]u16) =
     Array.remove_indices vs (map i64.u16 is)
-
--- END OF REMOVE_INDICES
-
--- START OF WINDOWED
 
 -- ==
 -- entry: test_windowed_i32
@@ -96,11 +90,3 @@ entry test_remove_indices (vs: [65535]i64) (is: [32767]u16) =
 -- input { 0i64 [1i32, 2i32, 3i32, 4i32, 5i32, 6i32, 7i32, 8i32, 9i32, 10i32] }
 -- error: w > 0
 entry test_windowed_i32 [n] (w: i64) (xs: [n]i32) : [][w]i32 = Array.windowed w xs
-
--- -- ==
--- -- entry: test_windowed_str
--- -- input { 2i64 [[115u8, 116u8, 114u8, 49u8], [115u8, 116u8, 114u8, 50u8], [115u8, 116u8, 114u8, 51u8], [115u8, 116u8, 114u8, 52u8]] }
--- -- output { [[[115u8, 116u8, 114u8, 49u8], [115u8, 116u8, 114u8, 50u8]], [[115u8, 116u8, 114u8, 50u8], [115u8, 116u8, 114u8, 51u8]], [[115u8, 116u8, 114u8, 51u8], [115u8, 116u8, 114u8, 52u8]]] }
--- entry test_windowed_str [n] (w: i64) (xs: []string[n]) = Array.windowed w xs
-
--- END OF WINDOWED
