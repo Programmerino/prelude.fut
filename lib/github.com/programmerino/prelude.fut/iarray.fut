@@ -147,7 +147,7 @@ module IArray: IArray = {
         let arr_ends = end_indices arr
         let m = length arr_ends
         in
-        scatter (replicate m ne) (iota m) (ArrayUtils.indices_to_values ne as'.data (arr_ends :> [m]i64))
+        scatter (replicate m ne) (iota m) (ArrayUtils.indices_to_values as'.data (arr_ends :> [m]i64))
 
     def length [n] 't (_: iarray [][n] t) = n
 
