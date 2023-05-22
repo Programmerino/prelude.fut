@@ -31,6 +31,9 @@ module type String = {
 
     -- | Converts between a single digit u8 ASCII character (interpreted as hex) and the corresponding u8 integer
     val digit_to_int: u8 -> option u8
+
+    -- | Converts between a u8 integer and the corresponding single digit u8 ASCII character (as hex).
+    val int_to_digit: u8 -> option u8
     
     -- | Returns the string representation of an integer in decimal
     val string_of_int: i64 -> string[]
@@ -79,6 +82,26 @@ module String: String = {
         case 'd' -> #Some 13
         case 'e' -> #Some 14
         case 'f' -> #Some 15
+        case _ -> #None
+
+    def int_to_digit c: option u8 =
+        match c
+        case 0u8 -> #Some '0'
+        case 1 -> #Some '1'
+        case 2 -> #Some '2'
+        case 3 -> #Some '3'
+        case 4 -> #Some '4'
+        case 5 -> #Some '5'
+        case 6 -> #Some '6'
+        case 7 -> #Some '7'
+        case 8 -> #Some '8'
+        case 9 -> #Some '9'
+        case 10 -> #Some 'a'
+        case 11 -> #Some 'b'
+        case 12 -> #Some 'c'
+        case 13 -> #Some 'd'
+        case 14 -> #Some 'e'
+        case 15 -> #Some 'f'
         case _ -> #None
 
     def string_of_int = StringUtils.string_of_int
