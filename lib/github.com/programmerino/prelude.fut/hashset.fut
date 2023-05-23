@@ -62,7 +62,33 @@ module type Type = {
     val resize: i64 -> i64 -> i64 -> i64 -> (i64, i64) -- current size, current load, load increase, acc. Return new size and new acc
 }
 
-module HashSet (T: Type): HashSet = {
+-- | Reduced version of Type which uses linear probing by default
+-- and sensible defaults
+module type MinType = {
+    type t
+    -- | An example of the type
+    val exm: t
+    -- | == for the type
+    val eq: t -> t -> bool
+    -- | See https://en.wikipedia.org/wiki/Double_hashing
+    val hash1: i64 -> i64 -> t -> i64
+    -- | See https://en.wikipedia.org/wiki/Double_hashing
+    val hash2: i64 -> i64 -> t -> i64
+}
+
+-- | Reduced MinType for numbers
+module type NumType  = {
+    type t
+    -- | An example of the type
+    val exm: t
+    -- | == for the type
+    val eq: t -> t -> bool
+    -- | How many bits are used for the data type
+    val bits: u64
+    val to_u64: t -> u64
+}
+
+module HashSet (T: Type) = {
     local open T
 
     -- Exporting from T
@@ -148,17 +174,12 @@ module HashSet (T: Type): HashSet = {
         {slots, acc, length, load}
 }
 
+module HashSet_(X: Type) = HashSet(X): HashSet
+
 local def LOAD_FACTOR = 0.25f64
 
--- | Sample implementation of the hashset using linear probing for i64s
-module LPSeti64 = HashSet {
-    type t = i64
-    def exm = 0i64
-    def eq = \(x: i64) y -> x == y
-    local def z = 7u64
-    local def bits = 64u64
-    def hash1 _ d x = i64.u64((u64.i64(x) * z) >> (bits - (u64.i64 d)))
-    def hash2 _ _ _ = 1i64
+module LinearProbing (X: MinType) = HashSet {
+    open X
     local def make_pow pow: *hashset [] t =
         let len = 2**pow
         in {
@@ -172,9 +193,7 @@ module LPSeti64 = HashSet {
 
     def emptySize = 8i64
     def empty: hashset [emptySize] t = make 8 :> hashset [emptySize] t
-
     def LOAD_FACTOR = LOAD_FACTOR
-
     def resize a load n (pow: i64) =
         let new_load = f64.i64(load + n)
         let min = i64.f64((new_load / LOAD_FACTOR))
@@ -183,5 +202,31 @@ module LPSeti64 = HashSet {
         in (new_size, acc)
 }
 
+module LinearProbingNum (X: NumType) = LinearProbing {
+    open X
+    def hash1 (_: i64) d (x: t) = i64.u64 (((to_u64 x) * 7u64) >> (bits - (u64.i64 d)))
+    def hash2 _ _ _ = 1i64
+}
+
+-- | Sample implementation of the hashset using linear probing for i64s
+module LPSeti64 = LinearProbingNum {
+    type t = i64
+    def exm = 0i64
+    def eq (x: i64) y = x == y
+    def bits = 64u64
+    def to_u64 = u64.i64
+}
+
+-- | Sample implementation of the hashset using linear probing for u8s
+module LPSetu8 = LinearProbingNum {
+    type t = u8
+    def exm = 0u8
+    def eq (x: u8) y = x == y
+    def bits = 8u64
+    def to_u64 = u64.u8
+}
+
+
 -- | Default hashset is using the linear probing above
 module Seti64 = LPSeti64
+module Setu8 = LPSetu8
