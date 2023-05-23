@@ -56,7 +56,7 @@ module Vector = {
         if m > 0 then
             let zero = copy xs[0]
             let (data, size) = maybe_resize zero v m
-            in (#[unsafe] Array.blit_all xs 0 data n, size)
+            in (#[unsafe] Array.blit_all xs 0 data n, size + m)
         else
             v
 
