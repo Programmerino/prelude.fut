@@ -42,16 +42,14 @@ module Vector = {
 
     local def maybe_resize_one 't [n] zero ((data, size): vector [n] t) =
         if (size + 1) > n then
-            let size_adder = i64.max n 1
-            in
-            (data ++ replicate size_adder zero, size + size_adder)
+            (data ++ replicate (i64.max n 1) zero, size)
         else
             (data, size)
 
     def push_back 't [n] (v: *vector [n] t) (x: t): vector [] t =
         let new_vec = maybe_resize_one (copy x) v
         in
-        set new_vec n x
+        set (new_vec with 1 = new_vec.1 + 1) n x
 
     -- | Concatenate an array with a vector and return a vector
     def concat_array 't [n][m] (v: *vector [n] t) (xs: [m]t) =
