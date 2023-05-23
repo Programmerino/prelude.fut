@@ -36,7 +36,7 @@ module Vector = {
         else if (size + m) > n then
             let target = #[unsafe] (2 * n) * ((m + size) `i64_ext.cdiv` (2 * n))
             in
-            (data ++ (replicate (target - n) zero), target)
+            (data ++ (replicate (target - n) zero), size)
         else
             (data, size)
 
