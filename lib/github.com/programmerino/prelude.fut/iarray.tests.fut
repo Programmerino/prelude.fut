@@ -1,6 +1,88 @@
 -- | ignore
 
 import "iarray"
+import "array"
+
+-- ==
+-- entry: test_from_array_lengths
+-- input { [1,2,3,4,5] [2i64,3i64] } output { true }
+entry test_from_array_lengths (xs: []i32) (ys: []i64) =
+  let res = IArray.from_array_lengths xs ys
+  in
+  Array.equals (==) res.data [1,2,3,4,5] && Array.equals (==) res.lengths [2, 3]
+
+-- ==
+-- entry: test_from_array_flags
+-- input { [1,2,3,4,5] [true, false, true, false, false] } output { true }
+entry test_from_array_flags (xs: []i32) (ys: []bool) =
+  let res = IArray.from_array_flags xs ys
+  in
+  Array.equals (==) res.data [1,2,3,4,5] && Array.equals (==) (res.lengths :> [2]i64) [2,3]
+
+-- ==
+-- entry: test_singleton
+-- input { [1,2,3] } output { true }
+entry test_singleton (xs: []i32) =
+  let res = IArray.singleton xs
+  in
+  Array.equals (==) res.data [1,2,3] && Array.equals (==) res.lengths [3]
+
+-- ==
+-- entry: test_concat
+-- input { [1,2,3] [2i64] [4,5,6] [1i64,2i64] } output { true }
+entry test_concat (a: []i32) b c d =
+  let res = IArray.concat (IArray.from_array_lengths a b) (IArray.from_array_lengths c d)
+  in
+  Array.equals (==) (res.data :> [6]i32) [1,2,3,4,5,6] && Array.equals (==) (res.lengths :> [3]i64) [2,1,2]
+
+-- ==
+-- entry: test_i
+-- input { [1,2,3,4,5] [2i64,3i64] 1i64 } output { [3,4,5] }
+entry test_i (xs: []i32) (lens: []i64) i = IArray.i (IArray.from_array_lengths xs lens) i
+
+-- ==
+-- entry: test_i_to
+-- input { [1,2,3,4,5] [2i64,3i64] 3i64 1i64 } output { [3,4,5] }
+entry test_i_to (xs: []i32) (lens: []i64) to i = IArray.i_to (IArray.from_array_lengths xs lens) to i
+
+-- ==
+-- entry: test_map_all
+-- input { [1,2,3,4,5] [2i64,3i64] 1 } output { true }
+entry test_map_all (xs: []i32) (lens: []i64) n =
+  let arr = IArray.from_array_lengths xs lens
+  let arr = IArray.map_all (\x -> x + n) arr
+  in
+  arr == {
+    data = [2,3,4,5,6],
+    lengths = [2, 3]
+  }
+
+-- ==
+-- entry: test_generate_flagged_segments
+-- input { [1,2,3,4,5] [2i64,3i64] } output { true }
+entry test_generate_flagged_segments (xs: []i32) (lens: []i64) =
+  let arr = IArray.from_array_lengths xs lens
+  in
+  (IArray.generate_flagged_segments arr) == ([true, false, true, false, false], [1,2,3,4,5])
+
+-- ==
+-- entry: test_length
+-- input { [1,2,3,4,5] [2i64,3i64] } output { 2i64 }
+entry test_length (xs: []i32) (lens: []i64) =
+  let arr = IArray.from_array_lengths xs lens
+  in
+  IArray.length arr
+
+-- ==
+-- entry: test_from_array_starts
+-- input { [1,2,3,4,5] [0i64,2i64,4i64] } output { true }
+entry test_from_array_starts (xs: []i32) (starts: []i64) =
+  let arr = IArray.from_array_starts xs starts :> iarray[][3]i32
+  in
+  arr == {
+    data = [1,2,3,4,5],
+    lengths = [2,2,1]
+  }
 
 -- ==
 -- entry: test_segmented_scan
