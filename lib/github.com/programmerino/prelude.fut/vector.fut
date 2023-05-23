@@ -7,24 +7,52 @@ local def CREATE_CONST = 6i64
 
 type vector [n] 't = ([n]t, i64)
 
-module Vector = {
+module type Vector = {
     -- | Return the number of elements in the vector
-    def length = snd
+    val length [n] 't: vector [n] t -> i64
 
-    -- | Is the array empty?
-    def null = length >-> ((==) 0i64)
+    -- | Is the vector empty?
+    val null [n] 't: vector [n] t -> bool
 
     -- | `get xs idx` gets the element in `xs` at index `idx`. If `xs` has
     -- `len` elements in it, then the valid indexes range from `0` to `len-1`.
+    val get [n] 't: vector [n] t -> i64 -> t
+    
+    -- | `set xs idx x` sets the element in `xs` at index `idx` to `x`. If `xs`
+    -- has `len` elements in it, then the valid indexes range from `0` to `len-1`.
+    val set [n] 't: *vector [n] t -> i64 -> t -> vector [n] t
+
+    -- | Convert vector to array
+    val to_array [n] 't: vector [n] t -> []t
+
+    -- | Convert array to vector
+    val of_array [n] 't: [n]t -> vector [n] t
+
+    -- | Empty vector
+    val empty 't: vector [0] t
+
+    -- | Push an element to the back of the vector
+    val push_back 't [n] : *vector [n] t -> t -> vector [] t
+
+    -- | Concatenate an array with a vector and return a vector
+    val concat_array 't [n][m] : *vector [n] t -> [m]t -> vector [] t
+
+    -- | Concatenation with another vector
+    val concat 't [n][m] : *vector [n] t -> vector [m] t -> vector [] t
+}
+
+module Vector: Vector = {
+    def length = snd
+
+    def null = length >-> ((==) 0i64)
+
     def get 't ((data, size): vector [] t) i =
         assert (i >= 0 && i < size) (#[unsafe] data[i])
 
     def set 't ((data, size): *vector [] t) i x = assert (i >= 0 && i < size) (data with [i] = x, size)
 
-    -- | Convert vector to array
     def to_array 't ((data, size): vector [] t) = #[unsafe] data[0:size]
 
-    -- | Convert vector to array
     def of_array [n] 't (data: [n]t): vector [n] t =
         (data, n)
 
@@ -51,7 +79,6 @@ module Vector = {
         in
         set (new_vec with 1 = new_vec.1 + 1) n x
 
-    -- | Concatenate an array with a vector and return a vector
     def concat_array 't [n][m] (v: *vector [n] t) (xs: [m]t) =
         if m > 0 then
             let zero = copy xs[0]
@@ -60,8 +87,6 @@ module Vector = {
         else
             v
 
-    -- | Concatenation with another vector
     def concat 't [n][m] (x: *vector [n] t) (y: vector [m] t) =
         concat_array x (to_array y)
-
 }
