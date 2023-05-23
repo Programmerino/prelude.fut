@@ -4,7 +4,7 @@ import "hashset"
 import "array"
 import "../../../../lib/github.com/diku-dk/sorts/radix_sort"
 
-module Set = Seti64
+module Set = LPSeti64
 
 -- ==
 -- entry: test_empty
@@ -22,10 +22,10 @@ entry test_empty (_: bool) =
 -- output { true }
 entry test_add (_: bool) =
     let empty = Set.empty
-    let x = Set.add 'x' (copy empty)
-    let xy = Set.add 'y' x
-    let xyz = Set.add 'z' (copy xy)
-    let wxyz = Set.add 'w' (copy xyz)
+    let x = Set.add 0 (copy empty)
+    let xy = Set.add 1 x
+    let xyz = Set.add 2 (copy xy)
+    let wxyz = Set.add 3 (copy xyz)
     let cond1 = Set.length xy == 2
     let cond2 = Set.length xyz == 3
     let cond3 = Set.length wxyz == 4
@@ -98,60 +98,3 @@ entry test_general (elems: [65535]i64) (rmv_list: [20]u8) =
     in
     assert (Array.equals (==) sorted_input sorted_keys) (Array.equals (==) sorted_input sorted_keys)
     && assert (Array.equals (==) sorted_pre_input sorted_pre_keys) (Array.equals (==) sorted_pre_input sorted_pre_keys)
-    -- && assert (a2 == b) true
- 
--- -- ==
--- -- entry: bench_multiadd
--- -- compiled random input { [1000000]i64 }
--- -- output { true }
--- entry bench_multiadd (arr: [1000000]i64) =
---     let ez = Set.multiadd arr (copy Set.empty)
---     let res = (Set.length ez) <= 1000000
---     in assert res res
-
--- -- ==
--- -- entry: bench_resize_num
--- -- input { 8i64 3i64 }
--- -- auto output
--- entry bench_resize_num a pow =
---     loop (a, pow) for n < 50 do
---         let new_load = trace(f64.i64 (n + a))
---         let two_exp = (i64.f64 (f64.ceil (f64.log2(new_load / 0.75)))) - pow
---         let new_size = a * (2**two_exp)
---         let pow = pow + two_exp
---         in
---         (new_size, pow)
--- -- ==
--- -- entry: bench_resize_num_
--- -- input { 8i64 3i64 }
--- -- auto output
--- entry bench_resize_num_ (a: i64) pow =
---     loop (a, pow) for n < 50 do
---         let new_load = f64.i64 (n + a)
---         let (new_size, pow) = iterate_until (\(x,_) -> x * 0.75 < new_load) (\(x, p) -> (x * 2, p + 1)) ((f64.i64 a), 0i64)
---         in
---         (i64.f64 new_size, pow)
-
--- -- ==
--- -- entry: bench_add
--- -- compiled random input { [1000000]i64 }
--- -- output { true }
--- entry bench_add [len] (xs: [len]i64) =
---     let ez = copy Set.empty
---     let ez = loop ez for x in xs do
---         Set.add x ez
---     let res = (Set.length ez) <= len
---     in assert res res
-
-
--- def real = Set.multiadd (1...1000000) (copy Set.empty)
--- -- ==
--- -- entry: bench_delete
--- -- input { 1000000i64 }
--- -- output { true }
--- entry bench_delete x =
---     let ez = copy Set.empty
---     let ez = loop ez for v < x do
---         Set.delete v ez
---     let res = (Set.length ez) <= 0
---     in assert res res
