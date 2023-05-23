@@ -33,3 +33,4 @@
 *.o
 data/
 .DS_Store
+*.tests
