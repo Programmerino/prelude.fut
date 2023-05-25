@@ -30,4 +30,13 @@ module ArrayUtils = {
             let starts = iota (n - w' + 1)
             in
             starts |> map(\x -> xs[x:x + w'] :> [w]a)
+
+    def blit [n][m] 'a (src: [n]a) src_pos (dst: *[m]a) dst_pos len =
+        let src_pos = assert (src_pos >= 0) src_pos
+        let dst_pos = assert (dst_pos >= 0) dst_pos
+        let len = assert (len >= 0) len
+        let len = assert(len <= n - src_pos) len
+        let len = assert(len <= m - dst_pos) len
+        in
+        scatter dst (iota len |> map(\x -> x + dst_pos)) (src[src_pos:src_pos + len] :> [len]a)
 }

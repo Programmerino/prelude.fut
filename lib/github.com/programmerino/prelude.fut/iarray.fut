@@ -29,6 +29,9 @@ module type IArray = {
     -- | Returns the segment at a given index
     val i [a][n] 't: iarray [a][n] t -> i64 -> []t
 
+    -- | Concatenates the segments at the given indices into a new array
+    val concat_indices [a][n][i] 't: iarray [a][n] t -> [i]i64 -> []t
+
     -- | Returns the segment at a given index, forcing a certain length
     val i_to [a][n] 't: iarray [a][n] t -> (b: i64) -> i64 -> [b]t
 
@@ -119,6 +122,14 @@ module IArray: IArray = {
         let start = start_index_of s i
         in
         s.data[start : start + s.lengths[i]]
+
+    def concat_indices s is =
+        let length = reduce_comm (+) 0 (is |> map (\i -> s.lengths[i]))
+        in
+        (loop (acc, offset) = (replicate length s.data[0], 0) for i in is do
+            let start = start_index_of s i
+            let length = s.lengths[i]
+            in (ArrayUtils.blit s.data start acc offset length, offset + length)).0
 
     def i_to 't s b ind =
         i s ind :> [b]t

@@ -41,6 +41,14 @@ entry test_concat (a: []i32) b c d =
 entry test_i (xs: []i32) (lens: []i64) i = IArray.i (IArray.from_array_lengths xs lens) i
 
 -- ==
+-- entry: test_concat_indices
+-- input { [1,2,3,0,0,0,4,5,6] [3i64,3i64,3i64] [0i64, 2i64] } output { [1,2,3,4,5,6] }
+entry test_concat_indices (xs: []i32) (lens: []i64) (indices: []i64) =
+  let arr = IArray.from_array_lengths xs lens
+  in
+  IArray.concat_indices arr indices
+
+-- ==
 -- entry: test_i_to
 -- input { [1,2,3,4,5] [2i64,3i64] 3i64 1i64 } output { [3,4,5] }
 entry test_i_to (xs: []i32) (lens: []i64) to i = IArray.i_to (IArray.from_array_lengths xs lens) to i
